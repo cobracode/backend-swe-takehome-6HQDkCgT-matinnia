@@ -52,26 +52,7 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
-// Start server
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-});
-
-// TODO: Implement graceful shutdown logic
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  // TODO: Close database connections
-  // TODO: Wait for ongoing requests to complete
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
-  // TODO: Close database connections
-  // TODO: Wait for ongoing requests to complete
-  process.exit(0);
-});
+// Server start has moved to server.ts, as best practice for integration testing, etc.
 
 export default app;
 
