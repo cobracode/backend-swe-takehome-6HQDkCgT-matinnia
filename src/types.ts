@@ -47,6 +47,21 @@ export interface CreateGameRequest {
   export interface Player {
     id: string;
     name: string;
+    email: string;
+    stats: PlayerStats;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+
+  export interface PlayerStats {
+    gamesPlayed: number;
+    gamesWon: number;
+    gamesLost: number;
+    gamesDrawn: number;
+    totalMoves: number;
+    averageMovesPerWin: number;
+    winRate: number;
+    efficiency: number;
   }
 
   export interface WinResult {
