@@ -1,211 +1,139 @@
 import { Router, Request, Response } from 'express';
-import { GameService } from '../services/gameService';
-import { PlayerModel } from '../models/player';
+import { PlayerService } from '../services/playerService';
 import { validationMiddleware } from '../middleware/validation';
-import { CreateGameRequest, JoinGameRequest, MakeMoveRequest } from '../types';
 
 const router = Router();
-const gameService = new GameService();
-const playerModel = new PlayerModel();
+const playerService = new PlayerService();
 
-// Create a new game
+// Create Player
 router.post('/', 
-  validationMiddleware.validateCreateGame,
-  async (req: Request<{}, {}, CreateGameRequest>, res: Response) => {
+  validationMiddleware.validateCreatePlayer,
+  async (req: Request<{}, {}, { name: string; email: string }>, res: Response) => {
     try {
-      const { name } = req.body;
-      const game = await gameService.createGame(name);
-      res.status(201).json({ game, message: 'Game created successfully' });
+      const { name, email } = req.body;
+      const player = await playerService.createPlayer(name, email);
+      res.status(201).json({ player, message: 'Player created successfully' });
     } catch (error) {
-      console.error('Error creating game:', error);
-      if (error instanceof Error && error.message.includes('Game name must be')) {
+      console.error('Error creating player:', error);
+      if (error instanceof Error && error.message.includes('Player name must be')) {
         return res.status(400).json({ error: 'Bad Request', message: error.message });
       }
-      res.status(500).json({ error: 'Internal server error', message: 'Failed to create game' });
+      res.status(500).json({ error: 'Internal server error', message: 'Failed to create player' });
     }
   }
 );
 
-// Get game by ID
+// Get Player
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
+      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
     }
-    const game = await gameService.getGameById(id);
-    if (!game) {
-      return res.status(404).json({ error: 'Not found', message: 'Game not found' });
+    const player = await playerService.getPlayerById(id);
+    if (!player) {
+      return res.status(404).json({ error: 'Not found', message: 'Player not found' });
     }
-    res.status(200).json({ game });
+    res.status(200).json({ player });
   } catch (error) {
-    console.error('Error getting game:', error);
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to get game' });
+    console.error('Error getting player:', error);
+    res.status(500).json({ error: 'Internal server error', message: 'Failed to get player' });
   }
 });
 
-// Get game status
-router.get('/:id/status', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
-    const status = await gameService.getGameStatus(id);
-    res.status(200).json({ status });
-  } catch (error) {
-    console.error('Error getting game status:', error);
-    if (error instanceof Error && error.message.includes('Game not found')) {
-      return res.status(404).json({ error: 'Not found', message: 'Game not found' });
-    }
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to get game status' });
-  }
-});
-
-// Join game
-router.post('/:id/join',
-  validationMiddleware.validateJoinGame,
-  async (req: Request<{ id: string }, {}, JoinGameRequest>, res: Response) => {
+// Update Player
+router.put('/:id',
+  validationMiddleware.validateUpdatePlayer,
+  async (req: Request<{ id: string }, {}, { name?: string; email?: string }>, res: Response) => {
     try {
       const { id } = req.params;
-      const { playerId } = req.body;
-      const player = await playerModel.getPlayerById(playerId);
-      if (!player) {
-        return res.status(404).json({ error: 'Not found', message: 'Player not found' });
+      const updates = req.body;
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
       }
-      const game = await gameService.joinGame(id, player);
-      res.status(200).json({ game, message: 'Successfully joined game' });
+      const player = await playerService.updatePlayer(id, updates);
+      res.status(200).json({ player, message: 'Player updated successfully' });
     } catch (error) {
-      console.error('Error joining game:', error);
+      console.error('Error updating player:', error);
       if (error instanceof Error) {
         if (error.message.includes('not found')) {
-          return res.status(404).json({ error: 'Not found', message: error.message });
+          return res.status(404).json({ error: 'Not found', message: 'Player not found' });
         }
-        if (
-          error.message.includes('not accepting') ||
-          error.message.includes('already in') ||
-          error.message.includes('full')
-        ) {
+        if (error.message.includes('Player name must be') || error.message.includes('Email must be')) {
           return res.status(400).json({ error: 'Bad Request', message: error.message });
         }
       }
-      res.status(500).json({ error: 'Internal server error', message: 'Failed to join game' });
+      res.status(500).json({ error: 'Internal server error', message: 'Failed to update player' });
     }
   }
 );
 
-// Make a move
-router.post('/:id/moves',
-  validationMiddleware.validateMakeMove,
-  async (req: Request<{ id: string }, {}, MakeMoveRequest>, res: Response) => {
-    try {
-      const { id } = req.params;
-      const { playerId, row, col } = req.body;
-      const result = await gameService.makeMove(id, playerId, row, col);
-      res.status(200).json({ game: result.game, move: result.move, message: 'Move made successfully' });
-    } catch (error) {
-      console.error('Error making move:', error);
-      if (error instanceof Error) {
-        if (error.message.includes('not found')) {
-          return res.status(404).json({ error: 'Not found', message: error.message });
-        }
-        if (
-          error.message.includes('not active') ||
-          error.message.includes('Not your turn') ||
-          error.message.includes('already occupied') ||
-          error.message.includes('coordinates must be')
-        ) {
-          return res.status(400).json({ error: 'Bad Request', message: error.message });
-        }
-      }
-      res.status(500).json({ error: 'Internal server error', message: 'Failed to make move' });
-    }
-  }
-);
-
-// Get valid moves
-router.get('/:id/moves', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
-    const validMoves = await gameService.getValidMoves(id);
-    res.status(200).json({ validMoves, count: validMoves.length });
-  } catch (error) {
-    console.error('Error getting valid moves:', error);
-    if (error instanceof Error) {
-      if (error.message.includes('not found')) {
-        return res.status(404).json({ error: 'Not found', message: 'Game not found' });
-      }
-      if (error.message.includes('not active')) {
-        return res.status(400).json({ error: 'Bad Request', message: 'Game is not active' });
-      }
-    }
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to get valid moves' });
-  }
-});
-
-// Get game statistics
-router.get('/:id/stats', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
-    const stats = await gameService.getGameStats(id);
-    res.status(200).json({ stats });
-  } catch (error) {
-    console.error('Error getting game stats:', error);
-    if (error instanceof Error && error.message.includes('Game not found')) {
-      return res.status(404).json({ error: 'Not found', message: 'Game not found' });
-    }
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to get game statistics' });
-  }
-});
-
-// List games
-router.get('/', async (req: Request, res: Response) => {
-  try {
-    const { status } = req.query;
-    let games;
-    if (status && typeof status === 'string') {
-      games = await gameService.getGamesByStatus(status as any);
-    } else {
-      games = await gameService.getAllGames();
-    }
-    res.status(200).json({ games, count: games.length });
-  } catch (error) {
-    console.error('Error getting games:', error);
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to get games' });
-  }
-});
-
-// Delete a game
+// Delete Player
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
+      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
     }
-    await gameService.deleteGame(id);
-    res.status(200).json({ message: 'Game deleted successfully' });
+    await playerService.deletePlayer(id);
+    res.status(200).json({ message: 'Player deleted successfully' });
   } catch (error) {
-    console.error('Error deleting game:', error);
+    console.error('Error deleting player:', error);
     if (error instanceof Error) {
       if (error.message.includes('not found')) {
-        return res.status(404).json({ error: 'Not found', message: 'Game not found' });
-      }
-      if (error.message.includes('Cannot delete an active game')) {
-        return res.status(400).json({ error: 'Bad Request', message: 'Cannot delete an active game' });
+        return res.status(404).json({ error: 'Not found', message: 'Player not found' });
       }
     }
-    res.status(500).json({ error: 'Internal server error', message: 'Failed to delete game' });
+    res.status(500).json({ error: 'Internal server error', message: 'Failed to delete player' });
+  }
+});
+
+// Search for a Player
+router.get('/search', async (req: Request, res: Response) => {
+  try {
+    const { name, limit } = req.query;
+    if (!name || typeof name !== 'string') {
+      return res.status(400).json({ error: 'Bad Request', message: 'Name query parameter is required' });
+    }
+    const limitNum = limit ? parseInt(limit as string, 10) : 10;
+    if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
+      return res.status(400).json({ error: 'Bad Request', message: 'Limit must be a number between 1 and 100' });
+    }
+    const players = await playerService.searchPlayersByName(name, limitNum);
+    res.status(200).json({ players, count: players.length });
+  } catch (error) {
+    console.error('Error searching players:', error);
+    res.status(500).json({ error: 'Internal server error', message: 'Failed to search players' });
+  }
+});
+
+// Get Player Stats
+router.get('/:id/stats', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
+    }
+    const stats = await playerService.getPlayerStats(id);
+    res.status(200).json({ stats });
+  } catch (error) {
+    console.error('Error getting player stats:', error);
+    if (error instanceof Error && error.message.includes('Player not found')) {
+      return res.status(404).json({ error: 'Not found', message: 'Player not found' });
+    }
+    res.status(500).json({ error: 'Internal server error', message: 'Failed to get player statistics' });
+  }
+});
+
+// List all players
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const players = await playerService.getAllPlayers();
+    res.status(200).json({ players, count: players.length });
+  } catch (error) {
+    console.error('Error getting players:', error);
+    res.status(500).json({ error: 'Internal server error', message: 'Failed to get players' });
   }
 });
 
 export { router as playerRoutes };
-
-
-// TODO: Harden route validation for IDs and payloads [ttt.todo.route.validation]
-// TODO: Complete games routes (status, join, moves, stats, delete, list) [ttt.todo.routes.games.complete]
