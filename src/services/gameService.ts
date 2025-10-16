@@ -9,7 +9,7 @@ export class GameService {
   }
 
   async createGame(name?: string) {
-    if (name && (typeof name !== 'string' || name.trim().length < 3)) {
+    if (!name || typeof name !== 'string' || name.trim().length < 3) {
       throw new Error('Game name must be at least 3 characters if provided');
     }
     return this.gameModel.createGame(name);

@@ -6,6 +6,7 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
   const message = err?.message || 'Internal Server Error';
 
   // Optionally log the error here
+  console.log(status, message);
 
   res.status(status).json({
     error: status >= 500 ? 'Server Error' : 'Bad Request',
