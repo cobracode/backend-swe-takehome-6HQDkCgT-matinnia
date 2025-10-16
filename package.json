@@ -16,8 +16,7 @@
     &quot;lint&quot;: &quot;eslint src/**/*.ts&quot;,
     &quot;lint:fix&quot;: &quot;eslint src/**/*.ts --fix&quot;,
     &quot;format&quot;: &quot;prettier --write src/**/*.ts&quot;,
-    &quot;type-check&quot;: &quot;tsc --noEmit&quot;,
-    "simulation": "ts-node scripts/simulation.ts"
+    &quot;type-check&quot;: &quot;tsc --noEmit&quot;
   },
   "dependencies": {
     &quot;express&quot;: &quot;^4.18.0&quot;,
