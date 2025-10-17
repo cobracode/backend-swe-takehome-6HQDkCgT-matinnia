@@ -90,6 +90,11 @@ Quickly building out unit tests is another way it accelerated my work.
 - [x] Add player email validation
 - [x] Add unit tests for GameModel and PlayerModel
 
+
+## Tech Debt
+I added a good amount of unit tests for the TODO list; however, code coverage still has room for more tests. The github workflow catches this and if there was more time, more tests would be in place.
+
+
 #### Feature Requests
 - [x] Add basic rate limiting middleware
 
