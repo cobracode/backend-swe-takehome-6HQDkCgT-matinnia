@@ -1,11 +1,11 @@
 // src/middleware/errorHandler.ts
 import { Request, Response, NextFunction } from 'express'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(
   err: any,
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ) {
   const status = err?.statusCode || err?.status || 500
