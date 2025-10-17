@@ -96,6 +96,95 @@ export const validationMiddleware = {
     
     next();
   },
+
+  validateLeaderboardQuery: (req: Request, res: Response, next: NextFunction) => {
+    const { page, limit, minGames, playerName, dateFrom, dateTo } = req.query;
+    
+    // Validate page parameter
+    if (page !== undefined) {
+      const pageNum = parseInt(page as string, 10);
+      if (isNaN(pageNum) || pageNum < 1) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'Page must be a positive integer' 
+        });
+      }
+    }
+    
+    // Validate limit parameter
+    if (limit !== undefined) {
+      const limitNum = parseInt(limit as string, 10);
+      if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'Limit must be a positive integer between 1 and 100' 
+        });
+      }
+    }
+    
+    // Validate minGames parameter
+    if (minGames !== undefined) {
+      const minGamesNum = parseInt(minGames as string, 10);
+      if (isNaN(minGamesNum) || minGamesNum < 0) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'minGames must be a non-negative integer' 
+        });
+      }
+    }
+    
+    // Validate playerName parameter
+    if (playerName !== undefined) {
+      if (typeof playerName !== 'string' || playerName.trim().length === 0) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'playerName must be a non-empty string' 
+        });
+      }
+      if (playerName.length > 100) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'playerName must be 100 characters or less' 
+        });
+      }
+    }
+    
+    // Validate dateFrom parameter
+    if (dateFrom !== undefined) {
+      const dateFromParsed = new Date(dateFrom as string);
+      if (isNaN(dateFromParsed.getTime())) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'dateFrom must be a valid ISO date string' 
+        });
+      }
+    }
+    
+    // Validate dateTo parameter
+    if (dateTo !== undefined) {
+      const dateToParsed = new Date(dateTo as string);
+      if (isNaN(dateToParsed.getTime())) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'dateTo must be a valid ISO date string' 
+        });
+      }
+    }
+    
+    // Validate date range
+    if (dateFrom !== undefined && dateTo !== undefined) {
+      const dateFromParsed = new Date(dateFrom as string);
+      const dateToParsed = new Date(dateTo as string);
+      if (dateFromParsed > dateToParsed) {
+        return res.status(400).json({ 
+          error: 'Bad Request', 
+          message: 'dateFrom must be before or equal to dateTo' 
+        });
+      }
+    }
+    
+    next();
+  },
 };
 
 

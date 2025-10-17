@@ -72,6 +72,104 @@ export class PlayerService {
       .sort((a, b) => b.stats.efficiency - a.stats.efficiency)
       .slice(0, numPlayers);
   }
+
+  async getPlayersByWinCountPaginated(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      minGames?: number;
+      playerName?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+    }
+  ): Promise<{ players: Player[]; total: number; page: number; limit: number; totalPages: number }> {
+    console.log(`🏆 Getting paginated players by win count - page: ${page}, limit: ${limit}`);
+    
+    let players = await this.playerModel.getAllPlayers();
+    
+    // Apply filters
+    if (filters) {
+      if (filters.minGames !== undefined) {
+        players = players.filter(p => p.stats.gamesPlayed >= filters.minGames!);
+      }
+      if (filters.playerName) {
+        const nameFilter = filters.playerName.toLowerCase();
+        players = players.filter(p => p.name.toLowerCase().includes(nameFilter));
+      }
+      if (filters.dateFrom) {
+        players = players.filter(p => p.createdAt >= filters.dateFrom!);
+      }
+      if (filters.dateTo) {
+        players = players.filter(p => p.createdAt <= filters.dateTo!);
+      }
+    }
+    
+    // Sort by win count
+    players = players.sort((a, b) => b.stats.gamesWon - a.stats.gamesWon);
+    
+    const total = players.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedPlayers = players.slice(startIndex, endIndex);
+    
+    return {
+      players: paginatedPlayers,
+      total,
+      page,
+      limit,
+      totalPages
+    };
+  }
+
+  async getPlayersByEfficiencyPaginated(
+    page: number = 1,
+    limit: number = 10,
+    filters?: {
+      minGames?: number;
+      playerName?: string;
+      dateFrom?: Date;
+      dateTo?: Date;
+    }
+  ): Promise<{ players: Player[]; total: number; page: number; limit: number; totalPages: number }> {
+    console.log(`⚡ Getting paginated players by efficiency - page: ${page}, limit: ${limit}`);
+    
+    let players = await this.playerModel.getAllPlayers();
+    
+    // Apply filters
+    if (filters) {
+      if (filters.minGames !== undefined) {
+        players = players.filter(p => p.stats.gamesPlayed >= filters.minGames!);
+      }
+      if (filters.playerName) {
+        const nameFilter = filters.playerName.toLowerCase();
+        players = players.filter(p => p.name.toLowerCase().includes(nameFilter));
+      }
+      if (filters.dateFrom) {
+        players = players.filter(p => p.createdAt >= filters.dateFrom!);
+      }
+      if (filters.dateTo) {
+        players = players.filter(p => p.createdAt <= filters.dateTo!);
+      }
+    }
+    
+    // Sort by efficiency
+    players = players.sort((a, b) => b.stats.efficiency - a.stats.efficiency);
+    
+    const total = players.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedPlayers = players.slice(startIndex, endIndex);
+    
+    return {
+      players: paginatedPlayers,
+      total,
+      page,
+      limit,
+      totalPages
+    };
+  }
 }
 
 
