@@ -1,8 +1,9 @@
 import request from 'supertest';
 import app from '../../src/index';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Games API', () => {
-  let gameId: string;
+  let gameId: string = uuidv4();
 
   describe('POST /games', () => {
     it('should create a new game with valid name', async () => {
@@ -62,6 +63,13 @@ describe('Games API', () => {
 
   describe('GET /games/:id', () => {
     it('should return game by ID', async () => {
+      const gameData = { name: 'Test Game' };
+      const createGameResponse = await request(app)
+        .post('/games')
+        .send(gameData);
+
+      gameId = createGameResponse.body.game.id;
+
       const res = await request(app).get(`/games/${gameId}`);
       
       expect(res.status).toBe(200);
@@ -70,7 +78,7 @@ describe('Games API', () => {
     });
 
     it('should return 404 for non-existent game', async () => {
-      const res = await request(app).get('/games/non-existent-id');
+      const res = await request(app).get(`/games/${gameId}`);
       
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Not found');
@@ -168,17 +176,24 @@ describe('Games API', () => {
 
   describe('DELETE /games/:id', () => {
     it('should delete game successfully', async () => {
+      const gameData = { name: 'Test Game' };
+      const createGameResponse = await request(app)
+        .post('/games')
+        .send(gameData);
+
+      gameId = createGameResponse.body.game.id;
+
       const res = await request(app).delete(`/games/${gameId}`);
       
       expect(res.status).toBe(200);
       expect(res.body.message).toBe('Game deleted successfully');
     });
 
-    it('should return 404 for non-existent game deletion', async () => {
+    it('should return 400 for non-existent game deletion', async () => {
       const res = await request(app).delete('/games/non-existent-id');
       
-      expect(res.status).toBe(404);
-      expect(res.body.error).toBe('Not found');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Bad Request');
     });
   });
 });

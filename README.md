@@ -60,18 +60,18 @@ src/
 ### Selected Tasks
 
 #### TODOs
-- Expand TypeScript tests for win/draw and routes
+- [x] Expand TypeScript tests for win/draw and routes
 - Standardize service error handling and messages
-- Harden route validation for IDs and payloads
-- Add API integration tests for core endpoints
-- Extend leaderboard endpoints (pagination, filters)
-- Implement PlayerService (create/get/update/delete/search/stats)
+- [x] Harden route validation for IDs and payloads
+- [x] Add API integration tests for core endpoints
+- [x] Extend leaderboard endpoints (pagination, filters)
+- [x] Implement PlayerService (create/get/update/delete/search/stats)
 - Complete games routes (status, join, moves, stats, delete, list)
-- Add player email validation
+- [x] Add player email validation
 - Add unit tests for GameModel and PlayerModel
 
 #### Feature Requests
-- Add basic rate limiting middleware
+- [x] Add basic rate limiting middleware
 
 #### Bugs To Fix
 - Move bounds check off-by-one allows row&#x3D;3 or col&#x3D;3 (symptom: )
