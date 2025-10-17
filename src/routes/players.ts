@@ -30,12 +30,10 @@ router.post(
           .status(400)
           .json({ error: 'Bad Request', message: error.message })
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to create player'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to create player'
+      })
     }
   }
 )
@@ -56,12 +54,10 @@ router.get(
       res.status(200).json({ player })
     } catch (error) {
       console.error('Error getting player:', error)
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get player'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get player'
+      })
     }
   }
 )
@@ -97,12 +93,10 @@ router.put(
             .json({ error: 'Bad Request', message: error.message })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to update player'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to update player'
+      })
     }
   }
 )
@@ -125,12 +119,10 @@ router.delete(
             .json({ error: 'Not found', message: 'Player not found' })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to delete player'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to delete player'
+      })
     }
   }
 )
@@ -140,32 +132,26 @@ router.get('/search', async (req: Request, res: Response) => {
   try {
     const { name, limit } = req.query
     if (!name || typeof name !== 'string') {
-      return res
-        .status(400)
-        .json({
-          error: 'Bad Request',
-          message: 'Name query parameter is required'
-        })
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'Name query parameter is required'
+      })
     }
     const limitNum = limit ? parseInt(limit as string, 10) : 10
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
-      return res
-        .status(400)
-        .json({
-          error: 'Bad Request',
-          message: 'Limit must be a number between 1 and 100'
-        })
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'Limit must be a number between 1 and 100'
+      })
     }
     const players = await playerService.searchPlayersByName(name, limitNum)
     res.status(200).json({ players, count: players.length })
   } catch (error) {
     console.error('Error searching players:', error)
-    res
-      .status(500)
-      .json({
-        error: 'Internal server error',
-        message: 'Failed to search players'
-      })
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to search players'
+    })
   }
 })
 
@@ -188,12 +174,10 @@ router.get(
           .status(404)
           .json({ error: 'Not found', message: 'Player not found' })
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get player statistics'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get player statistics'
+      })
     }
   }
 )
@@ -205,12 +189,10 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(200).json({ players, count: players.length })
   } catch (error) {
     console.error('Error getting players:', error)
-    res
-      .status(500)
-      .json({
-        error: 'Internal server error',
-        message: 'Failed to get players'
-      })
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to get players'
+    })
   }
 })
 

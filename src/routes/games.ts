@@ -27,12 +27,10 @@ router.post(
           .status(400)
           .json({ error: 'Bad Request', message: error.message })
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to create game'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to create game'
+      })
     }
   }
 )
@@ -76,12 +74,10 @@ router.get(
           .status(404)
           .json({ error: 'Not found', message: 'Game not found' })
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get game status'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get game status'
+      })
     }
   }
 )
@@ -124,12 +120,10 @@ router.post(
             .json({ error: 'Bad Request', message: error.message })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to join game'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to join game'
+      })
     }
   }
 )
@@ -147,13 +141,11 @@ router.post(
       const { id } = req.params
       const { playerId, row, col } = req.body
       const result = await gameService.makeMove(id, playerId, row, col)
-      res
-        .status(200)
-        .json({
-          game: result.game,
-          move: result.move,
-          message: 'Move made successfully'
-        })
+      res.status(200).json({
+        game: result.game,
+        move: result.move,
+        message: 'Move made successfully'
+      })
     } catch (error) {
       console.error('Error making move:', error)
       if (error instanceof Error) {
@@ -173,12 +165,10 @@ router.post(
             .json({ error: 'Bad Request', message: error.message })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to make move'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to make move'
+      })
     }
   }
 )
@@ -206,12 +196,10 @@ router.get(
             .json({ error: 'Bad Request', message: 'Game is not active' })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get valid moves'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get valid moves'
+      })
     }
   }
 )
@@ -232,12 +220,10 @@ router.get(
           .status(404)
           .json({ error: 'Not found', message: 'Game not found' })
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get game statistics'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get game statistics'
+      })
     }
   }
 )
@@ -279,20 +265,16 @@ router.delete(
             .json({ error: 'Not found', message: 'Game not found' })
         }
         if (error.message.includes('Cannot delete an active game')) {
-          return res
-            .status(400)
-            .json({
-              error: 'Bad Request',
-              message: 'Cannot delete an active game'
-            })
+          return res.status(400).json({
+            error: 'Bad Request',
+            message: 'Cannot delete an active game'
+          })
         }
       }
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to delete game'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to delete game'
+      })
     }
   }
 )

@@ -54,12 +54,10 @@ router.get(
       })
     } catch (error) {
       console.error('Error getting leaderboard:', error)
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get leaderboard'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get leaderboard'
+      })
     }
   }
 )
@@ -114,12 +112,10 @@ router.get(
       })
     } catch (error) {
       console.error('Error getting efficiency leaderboard:', error)
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to get efficiency leaderboard'
-        })
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to get efficiency leaderboard'
+      })
     }
   }
 )
