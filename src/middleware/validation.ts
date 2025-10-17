@@ -210,6 +210,3 @@ export const validationMiddleware = {
     next();
   },
 };
-
-
-// TODO: Harden route validation for IDs and payloads [ttt.todo.route.validation]

@@ -105,16 +105,6 @@ export class PlayerModel {
     return players;
   }
 
-  getPlayersByWinCount(numPlayers: number) {
-    // TODO
-    return 1;
-  }
-
-  getPlayersByEfficiency(numPlayers: number) {
-    // TODO
-    return 1;
-  }
-
   private createEmptyStats(): PlayerStats {
     return {
       gamesPlayed: 0,
