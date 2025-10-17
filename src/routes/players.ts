@@ -7,7 +7,7 @@ const router = Router();
 // Create Player
 router.post('/', 
   validationMiddleware.validateCreatePlayer,
-  async (req: Request<{}, {}, { name: string; email: string }>, res: Response) => {
+  async (req: Request<Record<string, never>, unknown, { name: string; email: string }>, res: Response) => {
     try {
       const { name, email } = req.body;
       const player = await playerService.createPlayer(name, email);
@@ -41,7 +41,7 @@ router.get('/:id', validationMiddleware.validateIdParam, async (req: Request, re
 router.put('/:id',
   validationMiddleware.validateIdParam,
   validationMiddleware.validateUpdatePlayer,
-  async (req: Request<{ id: string }, {}, { name?: string; email?: string }>, res: Response) => {
+  async (req: Request<{ id: string }, unknown, { name?: string; email?: string }>, res: Response) => {
     try {
       const { id } = req.params;
       const updates = req.body;

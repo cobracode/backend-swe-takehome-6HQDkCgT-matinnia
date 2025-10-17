@@ -8,7 +8,7 @@ const router = Router();
 // Create a new game
 router.post('/', 
   validationMiddleware.validateCreateGame,
-  async (req: Request<{}, {}, CreateGameRequest>, res: Response) => {
+  async (req: Request<Record<string, never>, unknown, CreateGameRequest>, res: Response) => {
     try {
       const { name } = req.body;
       const game = await gameService.createGame(name);
@@ -57,7 +57,7 @@ router.get('/:id/status', validationMiddleware.validateIdParam, async (req: Requ
 router.post('/:id/join',
   validationMiddleware.validateIdParam,
   validationMiddleware.validateJoinGame,
-  async (req: Request<{ id: string }, {}, JoinGameRequest>, res: Response) => {
+  async (req: Request<{ id: string }, unknown, JoinGameRequest>, res: Response) => {
     try {
       const { id } = req.params;
       const { playerId } = req.body;
@@ -90,7 +90,7 @@ router.post('/:id/join',
 router.post('/:id/moves',
   validationMiddleware.validateIdParam,
   validationMiddleware.validateMakeMove,
-  async (req: Request<{ id: string }, {}, MakeMoveRequest>, res: Response) => {
+  async (req: Request<{ id: string }, unknown, MakeMoveRequest>, res: Response) => {
     try {
       const { id } = req.params;
       const { playerId, row, col } = req.body;
