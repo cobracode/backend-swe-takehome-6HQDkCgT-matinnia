@@ -190,7 +190,3 @@ export class GameModel {
     return { totalMoves, duration, averageMoveTime };
   }
 }
-
-
-
-// TODO: Move bounds check off-by-one allows row=3 or col=3 [ttt.bug.invalid.move.bounds]
