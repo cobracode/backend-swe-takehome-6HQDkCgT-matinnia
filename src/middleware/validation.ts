@@ -1,5 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 
+const isValidUuid = (value: unknown): boolean => {
+  if (typeof value !== 'string') return false;
+  // Generic UUID v1-v5 pattern (lower/upper allowed)
+  const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+  return uuidRegex.test(value);
+};
+
 export const validationMiddleware = {
   validateCreateGame: (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body || {};
@@ -17,6 +24,9 @@ export const validationMiddleware = {
     if (!playerId || typeof playerId !== 'string') {
       return res.status(400).json({ error: 'Bad Request', message: 'playerId is required and must be a string' });
     }
+    if (!isValidUuid(playerId)) {
+      return res.status(400).json({ error: 'Bad Request', message: 'playerId must be a valid UUID' });
+    }
     next();
   },
 
@@ -24,6 +34,9 @@ export const validationMiddleware = {
     const { playerId, row, col } = req.body || {};
     if (!playerId || typeof playerId !== 'string') {
       return res.status(400).json({ error: 'Bad Request', message: 'playerId is required and must be a string' });
+    }
+    if (!isValidUuid(playerId)) {
+      return res.status(400).json({ error: 'Bad Request', message: 'playerId must be a valid UUID' });
     }
     const isInt = (n: any) => Number.isInteger(n);
     if (!isInt(row) || !isInt(col)) {
@@ -94,6 +107,17 @@ export const validationMiddleware = {
       }
     }
     
+    next();
+  },
+
+  validateIdParam: (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params || {} as { id?: string };
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ error: 'Bad Request', message: 'Invalid ID parameter' });
+    }
+    if (!isValidUuid(id)) {
+      return res.status(400).json({ error: 'Bad Request', message: 'ID must be a valid UUID' });
+    }
     next();
   },
 

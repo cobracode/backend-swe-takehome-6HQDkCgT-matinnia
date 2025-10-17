@@ -23,12 +23,9 @@ router.post('/',
 );
 
 // Get Player
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
-    }
     const player = await playerService.getPlayerById(id);
     if (!player) {
       return res.status(404).json({ error: 'Not found', message: 'Player not found' });
@@ -42,14 +39,12 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 // Update Player
 router.put('/:id',
+  validationMiddleware.validateIdParam,
   validationMiddleware.validateUpdatePlayer,
   async (req: Request<{ id: string }, {}, { name?: string; email?: string }>, res: Response) => {
     try {
       const { id } = req.params;
       const updates = req.body;
-      if (!id || typeof id !== 'string') {
-        return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
-      }
       const player = await playerService.updatePlayer(id, updates);
       res.status(200).json({ player, message: 'Player updated successfully' });
     } catch (error) {
@@ -68,12 +63,9 @@ router.put('/:id',
 );
 
 // Delete Player
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
-    }
     await playerService.deletePlayer(id);
     res.status(200).json({ message: 'Player deleted successfully' });
   } catch (error) {
@@ -107,12 +99,9 @@ router.get('/search', async (req: Request, res: Response) => {
 });
 
 // Get Player Stats
-router.get('/:id/stats', async (req: Request, res: Response) => {
+router.get('/:id/stats', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid player ID' });
-    }
     const stats = await playerService.getPlayerStats(id);
     res.status(200).json({ stats });
   } catch (error) {

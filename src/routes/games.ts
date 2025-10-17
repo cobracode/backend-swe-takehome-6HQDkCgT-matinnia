@@ -24,12 +24,9 @@ router.post('/',
 );
 
 // Get game by ID
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
     const game = await gameService.getGameById(id);
     if (!game) {
       return res.status(404).json({ error: 'Not found', message: 'Game not found' });
@@ -42,12 +39,9 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 // Get game status
-router.get('/:id/status', async (req: Request, res: Response) => {
+router.get('/:id/status', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
     const status = await gameService.getGameStatus(id);
     res.status(200).json({ status });
   } catch (error) {
@@ -61,6 +55,7 @@ router.get('/:id/status', async (req: Request, res: Response) => {
 
 // Join game
 router.post('/:id/join',
+  validationMiddleware.validateIdParam,
   validationMiddleware.validateJoinGame,
   async (req: Request<{ id: string }, {}, JoinGameRequest>, res: Response) => {
     try {
@@ -93,6 +88,7 @@ router.post('/:id/join',
 
 // Make a move
 router.post('/:id/moves',
+  validationMiddleware.validateIdParam,
   validationMiddleware.validateMakeMove,
   async (req: Request<{ id: string }, {}, MakeMoveRequest>, res: Response) => {
     try {
@@ -121,12 +117,9 @@ router.post('/:id/moves',
 );
 
 // Get valid moves
-router.get('/:id/moves', async (req: Request, res: Response) => {
+router.get('/:id/moves', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
     const validMoves = await gameService.getValidMoves(id);
     res.status(200).json({ validMoves, count: validMoves.length });
   } catch (error) {
@@ -144,12 +137,9 @@ router.get('/:id/moves', async (req: Request, res: Response) => {
 });
 
 // Get game statistics
-router.get('/:id/stats', async (req: Request, res: Response) => {
+router.get('/:id/stats', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
     const stats = await gameService.getGameStats(id);
     res.status(200).json({ stats });
   } catch (error) {
@@ -179,12 +169,9 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Delete a game
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', validationMiddleware.validateIdParam, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ error: 'Bad Request', message: 'Invalid game ID' });
-    }
     await gameService.deleteGame(id);
     res.status(200).json({ message: 'Game deleted successfully' });
   } catch (error) {
