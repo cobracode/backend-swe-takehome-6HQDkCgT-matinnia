@@ -55,7 +55,18 @@ src/
 └── index.ts
 ```
 
-## What You Need to Implement
+## AI Use
+
+A note on AI usage in this assignment: I use Cursor as my IDE, and at times asked it questions of the codebase to accelerate my debugging and problem-solving.
+Some of its suggestions have been better- or best-practices, in terms of game architecture. For example, pulling out the `app.listen()` from the App declaration
+in `index.ts` into its own `server.ts` file, makes for cleaner integration testing and separation of concerns.
+
+It also suggested pulling in the `express-rate-limit` library to quickly handle that in a standardized way.
+
+Quickly building out unit tests is another way it accelerated my work.
+
+
+## What's Been Implemented
 
 ### Selected Tasks
 
@@ -74,7 +85,7 @@ src/
 - [x] Add basic rate limiting middleware
 
 #### Bugs To Fix
-- Move bounds check off-by-one allows row&#x3D;3 or col&#x3D;3 (symptom: )
+- [x] Move bounds check off-by-one allows row&#x3D;3 or col&#x3D;3 (symptom: )
 
 ### Core Requirements (high-level)
 
