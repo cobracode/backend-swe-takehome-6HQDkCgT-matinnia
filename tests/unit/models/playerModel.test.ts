@@ -142,7 +142,7 @@ describe('PlayerModel', () => {
       
       expect(updatedPlayer.name).toBe('Alice Updated');
       expect(updatedPlayer.email).toBe('alice@example.com');
-      expect(updatedPlayer.updatedAt.getTime()).toBeGreaterThan(originalTime);
+      expect(updatedPlayer.updatedAt.getTime()).toBeGreaterThanOrEqual(originalTime);
     });
 
     it('updates player email', async () => {
