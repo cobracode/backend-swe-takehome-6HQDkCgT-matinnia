@@ -78,7 +78,8 @@ describe('Games API', () => {
     });
 
     it('should return 404 for non-existent game', async () => {
-      const res = await request(app).get(`/games/${gameId}`);
+      const nonExistentGameId = uuidv4();
+      const res = await request(app).get(`/games/${nonExistentGameId}`);
       
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Not found');
@@ -94,7 +95,8 @@ describe('Games API', () => {
     });
 
     it('should return 404 for non-existent game status', async () => {
-      const res = await request(app).get('/games/non-existent-id/status');
+      const nonExistentGameId = uuidv4();
+      const res = await request(app).get(`/games/${nonExistentGameId}/status`);
       
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Not found');
@@ -103,7 +105,7 @@ describe('Games API', () => {
 
   describe('POST /games/:id/join', () => {
     it('should return 404 for non-existent player', async () => {
-      const joinData = { playerId: 'non-existent-player' };
+      const joinData = { playerId: uuidv4() };
       const res = await request(app)
         .post(`/games/${gameId}/join`)
         .send(joinData);
@@ -151,7 +153,8 @@ describe('Games API', () => {
     });
 
     it('should return 404 for non-existent game moves', async () => {
-      const res = await request(app).get('/games/non-existent-id/moves');
+      const nonExistentGameId = uuidv4();
+      const res = await request(app).get(`/games/${nonExistentGameId}/moves`);
       
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Not found');
@@ -167,7 +170,8 @@ describe('Games API', () => {
     });
 
     it('should return 404 for non-existent game stats', async () => {
-      const res = await request(app).get('/games/non-existent-id/stats');
+      const nonExistentGameId = uuidv4();
+      const res = await request(app).get(`/games/${nonExistentGameId}/stats`);
       
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('Not found');
