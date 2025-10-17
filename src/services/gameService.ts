@@ -85,6 +85,3 @@ export class GameService {
     return this.gameModel.deleteGame(gameId);
   }
 }
-
-
-// TODO: Standardize service error handling and messages [ttt.todo.service.errors]

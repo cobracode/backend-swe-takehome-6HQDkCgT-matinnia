@@ -12,24 +12,20 @@ function post(url: string, data: any) {
 }
 
 async function createGame(name?: string) {
-  // const res = await axios.post(`${BASE_URL}/games`, { name })
   const res = await post(`${BASE_URL}/games`, { name })
   return res.data.game.id as string
 }
 
 async function createPlayer(name: string, email: string) {
-  // const res = await axios.post(`${BASE_URL}/players`, { name, email })
   const res = await post(`${BASE_URL}/players`, { name, email })
   return res.data.player.id as string
 }
 
 async function joinGame(gameId: string, playerId: string) {
-  // await axios.post(`${BASE_URL}/games/${gameId}/join`, { playerId })
   await post(`${BASE_URL}/games/${gameId}/join`, { playerId })
 }
 
 async function makeMove(gameId: string, playerId: string, row: number, col: number) {
-  // await axios.post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
   await post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
 }
 
@@ -45,10 +41,13 @@ async function run() {
 
   // bootstrap one game with two players
   const gameId = await createGame('PerfTest')
+  const game2Id = await createGame('PerfTest2')
   const p1 = await createPlayer('P1', 'p1@example.com')
   const p2 = await createPlayer('P2', 'p2@example.com')
   await joinGame(gameId, p1)
   await joinGame(gameId, p2)
+  await joinGame(game2Id, p1)
+  await joinGame(game2Id, p2)
 
   async function tick() {
     if (Date.now() > end) return
@@ -59,13 +58,14 @@ async function run() {
       const col = Math.floor(Math.random() * 3)
       const player = Math.random() < 0.5 ? p1 : p2
       promises.push(makeMove(gameId, player, row, col))
-      sent++
+      promises.push(makeMove(game2Id, player, row, col))
+      sent++;
     }
     await Promise.allSettled(promises);
     setTimeout(tick, 100);
   }
 
-  tick()
+  tick();
 
   const report = setInterval(() => {
     const elapsed = (Date.now() - start) / 1000

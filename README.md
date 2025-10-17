@@ -61,14 +61,14 @@ src/
 
 #### TODOs
 - [x] Expand TypeScript tests for win/draw and routes
-- Standardize service error handling and messages
+- [x] Standardize service error handling and messages
 - [x] Harden route validation for IDs and payloads
 - [x] Add API integration tests for core endpoints
 - [x] Extend leaderboard endpoints (pagination, filters)
 - [x] Implement PlayerService (create/get/update/delete/search/stats)
-- Complete games routes (status, join, moves, stats, delete, list)
+- [x] Complete games routes (status, join, moves, stats, delete, list)
 - [x] Add player email validation
-- Add unit tests for GameModel and PlayerModel
+- [x] Add unit tests for GameModel and PlayerModel
 
 #### Feature Requests
 - [x] Add basic rate limiting middleware

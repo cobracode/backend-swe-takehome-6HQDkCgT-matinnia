@@ -167,7 +167,3 @@ export class PlayerModel {
     return stats.totalMoves / stats.gamesWon;
   }
 }
-
-
-
-// TODO: Add player email validation [ttt.todo.validation.player-email]

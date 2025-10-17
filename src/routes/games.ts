@@ -189,7 +189,3 @@ router.delete('/:id', validationMiddleware.validateIdParam, async (req: Request,
 });
 
 export { router as gameRoutes };
-
-
-// TODO: Harden route validation for IDs and payloads [ttt.todo.route.validation]
-// TODO: Complete games routes (status, join, moves, stats, delete, list) [ttt.todo.routes.games.complete]

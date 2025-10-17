@@ -179,7 +179,3 @@ export class PlayerService {
     return this.playerModel.updatePlayerStatsAfterGame(playerId, gameResult, movesCount);
   }
 }
-
-
-
-// TODO: Implement PlayerService (create/get/update/delete/search/stats) [ttt.todo.service.player.complete]

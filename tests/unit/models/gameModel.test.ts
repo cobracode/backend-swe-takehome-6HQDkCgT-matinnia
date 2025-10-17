@@ -8,6 +8,3 @@ describe('GameModel', () => {
     expect(game.status).toBe('waiting');
   });
 });
-
-
-// TODO: Add unit tests for GameModel and PlayerModel [ttt.todo.tests.unit.models]
