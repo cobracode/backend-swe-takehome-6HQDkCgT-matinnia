@@ -1,16 +1,21 @@
 // src/middleware/errorHandler.ts
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
-  const status = err?.statusCode || err?.status || 500;
-  const message = err?.message || 'Internal Server Error';
+export function errorHandler(
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const status = err?.statusCode || err?.status || 500
+  const message = err?.message || 'Internal Server Error'
 
   // Optionally log the error here
-  console.log(status, message);
+  console.log(status, message)
 
   res.status(status).json({
     error: status >= 500 ? 'Server Error' : 'Bad Request',
-    message,
-  });
+    message
+  })
 }

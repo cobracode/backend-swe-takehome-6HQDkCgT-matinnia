@@ -1,20 +1,20 @@
-import { Player, PlayerStats } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+import { Player, PlayerStats } from '../types'
+import { v4 as uuidv4 } from 'uuid'
 
 export class PlayerModel {
-  private players: Map<string, Player> = new Map();
+  private players: Map<string, Player> = new Map()
 
   async createPlayer(name: string, email: string): Promise<Player> {
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      throw new Error('Player name must be a non-empty string');
+      throw new Error('Player name must be a non-empty string')
     }
     if (!email || typeof email !== 'string' || !this.isValidEmail(email)) {
-      throw new Error('Valid email address is required');
+      throw new Error('Valid email address is required')
     }
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email.toLowerCase().trim()
     for (const existing of this.players.values()) {
       if (existing.email === normalizedEmail) {
-        throw new Error('Email is already in use by another player');
+        throw new Error('Email is already in use by another player')
       }
     }
     const player: Player = {
@@ -23,22 +23,22 @@ export class PlayerModel {
       email: normalizedEmail,
       stats: this.createEmptyStats(),
       createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.players.set(player.id, player);
-    return player;
+      updatedAt: new Date()
+    }
+    this.players.set(player.id, player)
+    return player
   }
 
   async getPlayerById(playerId: string): Promise<Player | null> {
-    return this.players.get(playerId) || null;
+    return this.players.get(playerId) || null
   }
 
   async getPlayerByEmail(email: string): Promise<Player | null> {
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email.toLowerCase().trim()
     for (const player of this.players.values()) {
-      if (player.email === normalizedEmail) return player;
+      if (player.email === normalizedEmail) return player
     }
-    return null;
+    return null
   }
 
   async updatePlayer(
@@ -46,63 +46,76 @@ export class PlayerModel {
     updates: Partial<Pick<Player, 'name' | 'email'>>
   ): Promise<Player> {
     if (!playerId || !updates) {
-      throw new Error('Player ID and updates are required');
+      throw new Error('Player ID and updates are required')
     }
-    const player = await this.getPlayerById(playerId);
-    if (!player) throw new Error('Player not found');
+    const player = await this.getPlayerById(playerId)
+    if (!player) throw new Error('Player not found')
     if (updates.name !== undefined) {
-      if (!updates.name || typeof updates.name !== 'string' || updates.name.trim().length === 0) {
-        throw new Error('Player name must be a non-empty string');
+      if (
+        !updates.name ||
+        typeof updates.name !== 'string' ||
+        updates.name.trim().length === 0
+      ) {
+        throw new Error('Player name must be a non-empty string')
       }
-      player.name = updates.name.trim();
+      player.name = updates.name.trim()
     }
     if (updates.email !== undefined) {
-      if (!updates.email || typeof updates.email !== 'string' || !this.isValidEmail(updates.email)) {
-        throw new Error('Valid email address is required');
+      if (
+        !updates.email ||
+        typeof updates.email !== 'string' ||
+        !this.isValidEmail(updates.email)
+      ) {
+        throw new Error('Valid email address is required')
       }
-      const normalizedEmail = updates.email.toLowerCase().trim();
-      const existingPlayer = await this.getPlayerByEmail(normalizedEmail);
+      const normalizedEmail = updates.email.toLowerCase().trim()
+      const existingPlayer = await this.getPlayerByEmail(normalizedEmail)
       if (existingPlayer && existingPlayer.id !== playerId) {
-        throw new Error('Email is already in use by another player');
+        throw new Error('Email is already in use by another player')
       }
-      player.email = normalizedEmail;
+      player.email = normalizedEmail
     }
-    player.updatedAt = new Date();
-    this.players.set(playerId, player);
-    return player;
+    player.updatedAt = new Date()
+    this.players.set(playerId, player)
+    return player
   }
 
   async deletePlayer(playerId: string): Promise<void> {
-    const player = await this.getPlayerById(playerId);
-    if (!player) throw new Error('Player not found');
-    this.players.delete(playerId);
+    const player = await this.getPlayerById(playerId)
+    if (!player) throw new Error('Player not found')
+    this.players.delete(playerId)
   }
 
   async getAllPlayers(): Promise<Player[]> {
     return Array.from(this.players.values()).sort(
-      (a, b) => b.stats.gamesWon - a.stats.gamesWon || b.stats.efficiency - a.stats.efficiency
-    );
+      (a, b) =>
+        b.stats.gamesWon - a.stats.gamesWon ||
+        b.stats.efficiency - a.stats.efficiency
+    )
   }
 
   async getPlayerStats(playerId: string): Promise<PlayerStats> {
-    const player = await this.getPlayerById(playerId);
-    if (!player) throw new Error('Player not found');
-    return player.stats;
+    const player = await this.getPlayerById(playerId)
+    if (!player) throw new Error('Player not found')
+    return player.stats
   }
 
-  async searchPlayersByName(query: string, limit: number = 10): Promise<Player[]> {
+  async searchPlayersByName(
+    query: string,
+    limit: number = 10
+  ): Promise<Player[]> {
     if (!query || typeof query !== 'string') {
-      throw new Error('Search query must be a valid string');
+      throw new Error('Search query must be a valid string')
     }
     if (limit < 1 || limit > 100) {
-      throw new Error('Limit must be between 1 and 100');
+      throw new Error('Limit must be between 1 and 100')
     }
-    const normalizedQuery = query.toLowerCase().trim();
+    const normalizedQuery = query.toLowerCase().trim()
     const players = Array.from(this.players.values())
       .filter((player) => player.name.toLowerCase().includes(normalizedQuery))
       .sort((a, b) => b.stats.gamesWon - a.stats.gamesWon)
-      .slice(0, limit);
-    return players;
+      .slice(0, limit)
+    return players
   }
 
   private createEmptyStats(): PlayerStats {
@@ -114,56 +127,58 @@ export class PlayerModel {
       totalMoves: 0,
       averageMovesPerWin: 0,
       winRate: 0,
-      efficiency: 0,
-    };
+      efficiency: 0
+    }
   }
 
   async updatePlayerStatsAfterGame(
-    playerId: string, 
-    gameResult: 'won' | 'lost' | 'drawn', 
+    playerId: string,
+    gameResult: 'won' | 'lost' | 'drawn',
     movesCount: number
   ): Promise<Player> {
-    const player = await this.getPlayerById(playerId);
-    if (!player) throw new Error('Player not found');
-  
+    const player = await this.getPlayerById(playerId)
+    if (!player) throw new Error('Player not found')
+
     // Update basic stats
-    player.stats.gamesPlayed++;
-    player.stats.totalMoves += movesCount;
-    
+    player.stats.gamesPlayed++
+    player.stats.totalMoves += movesCount
+
     if (gameResult === 'won') {
-      player.stats.gamesWon++;
+      player.stats.gamesWon++
     } else if (gameResult === 'lost') {
-      player.stats.gamesLost++;
+      player.stats.gamesLost++
     } else {
-      player.stats.gamesDrawn++;
+      player.stats.gamesDrawn++
     }
-  
+
     // Recalculate derived stats using the existing functions
-    player.stats.winRate = this.calculateWinRate(player.stats);
-    player.stats.efficiency = this.calculateEfficiency(player.stats);
-    player.stats.averageMovesPerWin = this.calculateAverageMovesPerWin(player.stats);
-  
-    player.updatedAt = new Date();
-    return player;
+    player.stats.winRate = this.calculateWinRate(player.stats)
+    player.stats.efficiency = this.calculateEfficiency(player.stats)
+    player.stats.averageMovesPerWin = this.calculateAverageMovesPerWin(
+      player.stats
+    )
+
+    player.updatedAt = new Date()
+    return player
   }
 
   private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
   }
 
   private calculateWinRate(stats: PlayerStats): number {
-    if (stats.gamesPlayed === 0) return 0;
-    return (stats.gamesWon / stats.gamesPlayed) * 100;
+    if (stats.gamesPlayed === 0) return 0
+    return (stats.gamesWon / stats.gamesPlayed) * 100
   }
 
   private calculateEfficiency(stats: PlayerStats): number {
-    if (stats.totalMoves === 0) return 0;
-    return stats.gamesWon / stats.totalMoves;
+    if (stats.totalMoves === 0) return 0
+    return stats.gamesWon / stats.totalMoves
   }
 
   private calculateAverageMovesPerWin(stats: PlayerStats): number {
-    if (stats.gamesWon === 0) return 0;
-    return stats.totalMoves / stats.gamesWon;
+    if (stats.gamesWon === 0) return 0
+    return stats.totalMoves / stats.gamesWon
   }
 }
