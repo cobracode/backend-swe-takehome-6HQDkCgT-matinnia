@@ -7,6 +7,7 @@ import { gameRoutes } from './routes/games';
 import { playerRoutes } from './routes/players';
 import { leaderboardRoutes } from './routes/leaderboard';
 import { errorHandler } from './middleware/errorHandler';
+import { rateLimiter } from './middleware/rateLimiter';
 import { validationMiddleware } from './middleware/validation';
 
 // Load environment variables
@@ -24,6 +25,9 @@ app.use(express.json());
 
 // Request logging
 app.use(morgan('combined'));
+
+// Rate limiter
+app.use(rateLimiter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -56,5 +60,3 @@ app.use('*', (req, res) => {
 // Server start has moved to server.ts, as best practice for integration testing, etc.
 
 export default app;
-
-// TODO: Add basic rate limiting middleware [ttt.feature.rate.limit]
