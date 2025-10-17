@@ -154,7 +154,6 @@ export class PlayerModel {
     player.stats.averageMovesPerWin = this.calculateAverageMovesPerWin(player.stats);
   
     player.updatedAt = new Date();
-    this.players.set(playerId, player);
     return player;
   }
 

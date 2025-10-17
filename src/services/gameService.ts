@@ -38,6 +38,7 @@ export class GameService {
       const game = result.game;
       
       if (game.status === 'completed' && game.winnerId) {
+        console.log(' **** Game WON!\n');
         // Update winner stats
         await this.playerService.updatePlayerStatsAfterGame(game.winnerId, 'won', game.moves.length);
         // Update loser stats
@@ -46,6 +47,7 @@ export class GameService {
           await this.playerService.updatePlayerStatsAfterGame(loserId, 'lost', game.moves.length);
         }
       } else if (game.status === 'draw') {
+        console.log(' **** Game in a DRAW!\n');
         // Update both players for draw
         for (const player of game.players) {
           await this.playerService.updatePlayerStatsAfterGame(player.id, 'drawn', game.moves.length);

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import { gameRoutes } from './routes/games';
 import { playerRoutes } from './routes/players';
 import { leaderboardRoutes } from './routes/leaderboard';
@@ -21,8 +22,8 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// TODO: Add request logging middleware (morgan)
-// Example: app.use(morgan('combined'));
+// Request logging
+app.use(morgan('combined'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
