@@ -128,6 +128,36 @@ export class PlayerModel {
     };
   }
 
+  async updatePlayerStatsAfterGame(
+    playerId: string, 
+    gameResult: 'won' | 'lost' | 'drawn', 
+    movesCount: number
+  ): Promise<Player> {
+    const player = await this.getPlayerById(playerId);
+    if (!player) throw new Error('Player not found');
+  
+    // Update basic stats
+    player.stats.gamesPlayed++;
+    player.stats.totalMoves += movesCount;
+    
+    if (gameResult === 'won') {
+      player.stats.gamesWon++;
+    } else if (gameResult === 'lost') {
+      player.stats.gamesLost++;
+    } else {
+      player.stats.gamesDrawn++;
+    }
+  
+    // Recalculate derived stats using the existing functions
+    player.stats.winRate = this.calculateWinRate(player.stats);
+    player.stats.efficiency = this.calculateEfficiency(player.stats);
+    player.stats.averageMovesPerWin = this.calculateAverageMovesPerWin(player.stats);
+  
+    player.updatedAt = new Date();
+    this.players.set(playerId, player);
+    return player;
+  }
+
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);

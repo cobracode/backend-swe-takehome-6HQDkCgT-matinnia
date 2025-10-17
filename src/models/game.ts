@@ -75,6 +75,7 @@ export class GameModel {
     game.moves.push(move);
 
     const winResult = this.checkWinCondition(game.board, playerId);
+
     if (winResult.won) {
       game.status = 'completed';
       game.winnerId = playerId;

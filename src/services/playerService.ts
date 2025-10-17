@@ -170,6 +170,14 @@ export class PlayerService {
       totalPages
     };
   }
+
+  async updatePlayerStatsAfterGame(
+    playerId: string, 
+    gameResult: 'won' | 'lost' | 'drawn', 
+    movesCount: number
+  ): Promise<Player> {
+    return this.playerModel.updatePlayerStatsAfterGame(playerId, gameResult, movesCount);
+  }
 }
 
 

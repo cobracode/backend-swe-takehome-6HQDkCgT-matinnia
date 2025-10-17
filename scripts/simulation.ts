@@ -33,6 +33,11 @@ async function makeMove(gameId: string, playerId: string, row: number, col: numb
   await post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
 }
 
+async function getLeaderboard() {
+  const leaderboard = await axios.get(`${BASE_URL}/leaderboard`);
+  console.log("LEADERBOARD: ", leaderboard.data?.leaderboard);
+}
+
 async function run() {
   const start = Date.now()
   const end = start + DURATION * 1000
@@ -56,8 +61,8 @@ async function run() {
       promises.push(makeMove(gameId, player, row, col))
       sent++
     }
-    await Promise.allSettled(promises)
-    setTimeout(tick, 100)
+    await Promise.allSettled(promises);
+    setTimeout(tick, 100);
   }
 
   tick()
@@ -68,7 +73,9 @@ async function run() {
     console.log(`elapsed=${elapsed.toFixed(1)}s sent=${sent} rate=${rate}/s`)
     if (Date.now() > end) {
       clearInterval(report)
+      getLeaderboard();
       console.log('done')
+      
     }
   }, 1000)
 }
