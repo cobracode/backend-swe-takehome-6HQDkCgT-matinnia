@@ -1,9 +1,8 @@
 import { Router, Request, Response } from 'express';
-import { PlayerService } from '../services/playerService';
+import { playerService } from '../services';
 import { validationMiddleware } from '../middleware/validation';
 
 const router = Router();
-const playerService = new PlayerService();
 
 // Create Player
 router.post('/', 

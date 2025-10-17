@@ -1,12 +1,9 @@
 import { Router, Request, Response } from 'express';
-import { GameService } from '../services/gameService';
-import { PlayerModel } from '../models/player';
+import { playerService, gameService } from '../services';
 import { validationMiddleware } from '../middleware/validation';
 import { CreateGameRequest, JoinGameRequest, MakeMoveRequest } from '../types';
 
 const router = Router();
-const gameService = new GameService();
-const playerModel = new PlayerModel();
 
 // Create a new game
 router.post('/', 
@@ -69,7 +66,7 @@ router.post('/:id/join',
     try {
       const { id } = req.params;
       const { playerId } = req.body;
-      const player = await playerModel.getPlayerById(playerId);
+      const player = await playerService.getPlayerById(playerId);
       if (!player) {
         return res.status(404).json({ error: 'Not found', message: 'Player not found' });
       }

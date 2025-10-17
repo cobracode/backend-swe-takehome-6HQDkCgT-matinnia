@@ -56,6 +56,22 @@ export class PlayerService {
     console.log(`🔎 Searching players by name: '${query}' (limit ${limit})`);
     return this.playerModel.searchPlayersByName(query, limit);
   }
+
+  async getPlayersByWinCount(numPlayers: number): Promise<Player[]> {
+    console.log(`🏆 Getting top ${numPlayers} players by win count`);
+    const players = await this.playerModel.getAllPlayers();
+    return players
+      .sort((a, b) => b.stats.gamesWon - a.stats.gamesWon)
+      .slice(0, numPlayers);
+  }
+
+  async getPlayersByEfficiency(numPlayers: number): Promise<Player[]> {
+    console.log(`⚡ Getting top ${numPlayers} players by efficiency`);
+    const players = await this.playerModel.getAllPlayers();
+    return players
+      .sort((a, b) => b.stats.efficiency - a.stats.efficiency)
+      .slice(0, numPlayers);
+  }
 }
 
 

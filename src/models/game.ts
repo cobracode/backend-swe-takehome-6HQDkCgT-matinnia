@@ -18,6 +18,7 @@ export class GameModel {
       moves: [],
     };
     this.games.set(game.id, game);
+    console.log(`✅ Game created: ${game.id}`);
     return game;
   }
 

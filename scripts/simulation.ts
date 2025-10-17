@@ -6,22 +6,31 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
 const TARGET_TPS = Number(process.env.TARGET_TPS || 200)
 const DURATION = Number(process.env.DURATION || 30)
 
+function post(url: string, data: any) {
+  console.log(`Posting to [${url}]`, data);
+  return axios.post(url, data);
+}
+
 async function createGame(name?: string) {
-  const res = await axios.post(`${BASE_URL}/games`, { name })
+  // const res = await axios.post(`${BASE_URL}/games`, { name })
+  const res = await post(`${BASE_URL}/games`, { name })
   return res.data.game.id as string
 }
 
 async function createPlayer(name: string, email: string) {
-  const res = await axios.post(`${BASE_URL}/players`, { name, email })
+  // const res = await axios.post(`${BASE_URL}/players`, { name, email })
+  const res = await post(`${BASE_URL}/players`, { name, email })
   return res.data.player.id as string
 }
 
 async function joinGame(gameId: string, playerId: string) {
-  await axios.post(`${BASE_URL}/games/${gameId}/join`, { playerId })
+  // await axios.post(`${BASE_URL}/games/${gameId}/join`, { playerId })
+  await post(`${BASE_URL}/games/${gameId}/join`, { playerId })
 }
 
 async function makeMove(gameId: string, playerId: string, row: number, col: number) {
-  await axios.post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
+  // await axios.post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
+  await post(`${BASE_URL}/games/${gameId}/moves`, { playerId, row, col })
 }
 
 async function run() {
