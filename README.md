@@ -44,6 +44,15 @@ npm test
 npm run simulation
 ```
 
+You may run into rate limiting. The default window is 60 seconds, and 100 requests in that timeframe.
+
+You can change these with the environment variables in an .env file or on the terminal:
+
+```
+RATE_LIMIT_WINDOW_MS: max requests window
+RATE_LIMIT_MAX: max number of requests
+```
+
 ## Project Structure
 
 ```
